@@ -1,0 +1,24 @@
+import React from "react";
+import GlobalStyles from 'styles/GlobalStyles';
+
+ 
+import MainLandingPage from "MainLandingPage.js";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+export default function App() {
+  // If you want to disable the animation just use the disabled `prop` like below on your page's component
+  // return <AnimationRevealPage disabled>xxxxxxxxxx</AnimationRevealPage>;
+
+
+  return (
+    <>
+      <GlobalStyles />
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainLandingPage />} />
+        </Routes>
+      </Router>
+    </>
+  );
+}
