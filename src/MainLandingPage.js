@@ -13,7 +13,7 @@ import {
 import tw from "twin.macro";
 import { LogoLink } from "components/headers/light.js";
 import { SectionHeading as HeadingBase } from "components/misc/Headings";
-import { SectionDescription as DescriptionBase } from "components/misc/Typography";
+import { SectionDescription as DescriptionBase, SectionDescription } from "components/misc/Typography";
 import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 
 import heroScreenshotImageSrc from "images/demo/MainLandingPageHero.png";
@@ -75,7 +75,7 @@ const buttonStyle = {
   display: "inline-block",
   fontWeight: "600",
   fontSize: "18px",
-  padding: "5px 20px",
+  padding: "5px 5px",
   lineHeight: "50px",
   textAlign: "center",
   textDecoration: "none",
@@ -194,18 +194,10 @@ export default ({
           </HeroRow>
           <SectionContainer id="landingPageDemos" style={sectionHighlight}>
             <SectionHeading>Enter the details</SectionHeading>
-            <HeroRow>
-            <ImageColumn style={{padding:"10px"}}>
-              <ImageContainer>
-                <Image src='https://imagizer.imageshack.com/img923/7483/Oel54j.png' />
-              </ImageContainer>
-            </ImageColumn>
-            <TextColumn  style={{padding:"10px"}}>
-              <Heading as="h3" style={{fontSize:'32px',fontWeight:"normal"}}>Provide the information</Heading>
-              <Description>Select the source for gathering information. Use the date picker to serach for the particular date. Must enter all the fields. It takes time to get the information for you</Description>
-
-              <Actions>
-              <div className="form">
+            <div style={centerFlex}>
+            <SectionDescription>Select the source for gathering information. Use the date picker to search for the particular date. Must enter all the fields. It takes time while we get the information for you</SectionDescription>
+            </div>
+            <div className="form">
               <form onSubmit={handleSubmit}>
                 <div style={centerFlex}>
                   <select
@@ -213,34 +205,31 @@ export default ({
                     onChange={(e) => setDropdownValue(e.target.value)}
                     style={buttonStyle2}
                   >
-                    <option value="">Select an option</option>
-                    <option value="1" s>
-                      Option 1
-                    </option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
+                    <option value="">Select News</option>
+                    <option value="1" >NDTV (English)</option>
+                    <option value="2">Hindustan (Hindi)</option>
+                    <option value="3">Prajavani (Kannada)</option>
+                    <option value="4">Dinamalar (Tamil)</option>
+                    <option value="5">Mathrubhumi (Malayalam)</option>
+                    <option value="6">Eenadu (Telugu)</option>
                   </select>
                   <div style={datePickerStyle}>
+                  <div style={textWhite}>Enter date</div>
                   <DatePicker
                     class="datepicker"
                     selected={dateValue}
                     onChange={(date) => setDateValue(date)}
-                  /><div style={textWhite}>Enter date</div>
-                  </div></div>
+                  />
+                  </div>
                   <div>
                     <button type="submit" class="button-74" style={buttonStyle}>
-                      Submit
-                      <ReactSVG src="images\arrow-right-icon.svg"></ReactSVG>
+                      
+                      <img src="https://imagizer.imageshack.com/img924/2614/Lkco5F.png" alt="" width={60} height={60}></img>
                     </button>
                   </div>
-                
+                  </div>
               </form>
             </div>
-              </Actions>
-            </TextColumn>
-
-            </HeroRow>
-            
           </SectionContainer>
         </Content2Xl>
       </Container>
