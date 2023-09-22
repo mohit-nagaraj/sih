@@ -6,7 +6,7 @@ import MainLandingPage from "MainLandingPage.js";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "Dashboard";
-import PreviousPage from "test";
+
 
 export default function App() {
   // If you want to disable the animation just use the disabled `prop` like below on your page's component
@@ -22,7 +22,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<MainLandingPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/test" element={<PreviousPage />} />
         </Routes>
       </Router>
     </>
