@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 import DatePicker from "react-datepicker";
+import { useNavigate } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
-import { motion } from "framer-motion";
-
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import {
   Container,
@@ -14,11 +13,9 @@ import tw from "twin.macro";
 import { LogoLink } from "components/headers/light.js";
 import { SectionHeading as HeadingBase } from "components/misc/Headings";
 import { SectionDescription as DescriptionBase, SectionDescription } from "components/misc/Typography";
-import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 
-import heroScreenshotImageSrc from "images/demo/MainLandingPageHero.png";
 import logo from "images/logo.svg";
-import { ReactSVG } from "react-svg";
+
 
 /* Hero */
 const Row = tw.div`flex`;
@@ -54,13 +51,6 @@ const Image = tw.img`max-w-full rounded-t sm:rounded`;
 const SectionContainer = tw(ContentWithVerticalPadding)``;
 const SectionHeading = tw(HeadingBase)`text-primary-900`;
 
-const PreviewCards = tw.div`flex flex-wrap -mr-12`;
-const PreviewCardContainer = tw.div`mt-24 mx-auto md:mx-0 max-w-lg w-full md:w-1/2 lg:w-1/3 pr-12`;
-const PreviewCard = tw(motion.a)`block rounded-lg shadow-raised`;
-
-const PreviewButton = tw(
-  PrimaryButtonBase
-)`w-full rounded-b-lg rounded-t-none py-5 font-semibold`;
 const sectionHighlight={
   backgroundColor:"#cab3f4",
   borderRadius: "30px",
@@ -102,6 +92,7 @@ const buttonStyle2 = {
   WebkitUserSelect: "none",
   touchAction: "manipulation",
 };
+
 const datePickerStyle = {
   display: 'block',
   margin:'20px 10px',
@@ -113,6 +104,7 @@ const textWhite={color:'#fff'};
 const optionStyle = {
   padding: "10px 10px",
 };
+/** */
 export default ({
   features = null,
   primaryButtonUrl = "#landingPageDemos",
@@ -121,9 +113,6 @@ export default ({
   secondaryButtonText = "GitHub",
   buttonRoundedCss = "",
   landingPages = {},
-  /**landingPages = {
-    HotelTravelLandingPage: { component: () => {}, imageSrc: "", url: "" },
-  }, */
   innerPages = {},
   blocks = {},
   heading = "Insight Ink",
@@ -152,16 +141,21 @@ export default ({
   ];
   const [dropdownValue, setDropdownValue] = useState("");
   const [dateValue, setDateValue] = useState("");
-
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    const formattedDate = dateValue
+      ? `${dateValue.getFullYear()}-${(dateValue.getMonth() + 1)
+          .toString()
+          .padStart(2, '0')}`
+      : '';
+    navigate('/dashboard');
     // Submit the data here
-    console.log(dropdownValue, dateValue);
+    console.log(dropdownValue,formattedDate);
   };
-
+  
   return (
-    <div style={{backgroundImage:'url(https://imagizer.imageshack.com/img922/8551/WqQoIZ.jpg)', backgroundSize: "fit", backgroundRepeat: "no-repeat"}}>
+    <div style={{backgroundImage:'url(https://imagizer.imageshack.com/img923/9411/ohe9vb.png)', backgroundSize: "fit", backgroundRepeat: "no-repeat"}}>
       <AnimationRevealPage>
       <Container tw="-mx-8 -mt-8 pt-8 px-8" style={{backdropFilter:"blur(2px)"}}>
         <Content2Xl style={{padding:'0px 0px'}}>
@@ -206,23 +200,23 @@ export default ({
                     style={buttonStyle2}
                   >
                     <option value="">Select News</option>
-                    <option value="1" >NDTV (English)</option>
-                    <option value="2">Hindustan (Hindi)</option>
-                    <option value="3">Prajavani (Kannada)</option>
-                    <option value="4">Dinamalar (Tamil)</option>
-                    <option value="5">Mathrubhumi (Malayalam)</option>
-                    <option value="6">Eenadu (Telugu)</option>
+                    <option value="ndtv" >NDTV (English)</option>
+                    <option value="hindustan">Hindustan (Hindi)</option>
+                    <option value="prajavani">Prajavani (Kannada)</option>
+                    <option value="dinamalar">Dinamalar (Tamil)</option>
+                    <option value="mathrubhumi">Mathrubhumi (Malayalam)</option>
+                    <option value="eenadu">Eenadu (Telugu)</option>
                   </select>
                   <div style={datePickerStyle}>
                   <div style={textWhite}>Enter date</div>
                   <DatePicker
-                    class="datepicker"
+                    className="datepicker"
                     selected={dateValue}
-                    onChange={(date) => setDateValue(date)}
+                    onChange={(date) =>setDateValue(date)}
                   />
                   </div>
                   <div>
-                    <button type="submit" class="button-74" style={buttonStyle}>
+                    <button type="submit" className="button-74" style={buttonStyle}>
                       
                       <img src="https://imagizer.imageshack.com/img924/2614/Lkco5F.png" alt="" width={60} height={60}></img>
                     </button>
@@ -238,6 +232,9 @@ export default ({
     
   );
 };
+/**const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+                        .toString()
+                        .padStart(2, '0')}`; */
 
 /**import React, { useState, useEffect } from "react";
 import AnchorLink from "react-anchor-link-smooth-scroll";
