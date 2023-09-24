@@ -101,9 +101,7 @@ const datePickerStyle = {
   backgroundColor: '#6415FF', // Change the text color
 };
 const textWhite={color:'#fff'};
-const optionStyle = {
-  padding: "10px 10px",
-};
+
 /** */
 export default ({
   features = null,
