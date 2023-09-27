@@ -1,6 +1,6 @@
 {
-  "name": "treact",
-  "version": "0.1.0",
+  "name": "insight-ink",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@nadavshaar/react-grid-table": "^1.1.2",
@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@trendmicro/react-sidenav": "^0.5.0",
+    "axios": "^1.5.1",
     "feather-icons": "^4.29.0",
     "font-awesome": "^4.7.0",
     "framer-motion": "^7.3.2",

@@ -2,10 +2,10 @@ import React, {useEffect} from "react";
 import GlobalStyles from 'styles/GlobalStyles';
 
  
-import MainLandingPage from "MainLandingPage.js";
+import MainLandingPage from "pages/MainLandingPage.js";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "Dashboard";
+import Dashboard from "pages/Dashboard";
 
 
 export default function App() {
@@ -16,6 +16,7 @@ export default function App() {
   }, []);
 
   return (
+    //
     <>
       <GlobalStyles />
       <Router>
