@@ -17,7 +17,7 @@ import {
   SectionDescription as DescriptionBase,
   SectionDescription,
 } from "components/misc/Typography";
-import logo from "images/logo.svg";
+import logo from "images/logo.png";
 import "./MainLandingPage.css";
 import DotRing from "components/dotRing";
 import { MouseContext } from "../components/context/mouse-context";
@@ -53,12 +53,12 @@ const SectionHeading = tw(HeadingBase)`text-primary-900`;
 
 // Define the styles for different UI elements
 const sectionHighlight = {
-  backgroundColor: "#cab3f4",
+  backgroundColor: "#242424",
   borderRadius: "30px",
 };
 const buttonStyle = {
-  margin: "20px 10px",
-  backgroundColor: "#6415FF",
+  margin: "20px 10px 10px 10px",
+  backgroundColor: "#5e5e5e",
   border: "2px solid #000000",
   borderRadius: "30px",
   color: "#F7FAFC",
@@ -75,12 +75,13 @@ const buttonStyle = {
   touchAction: "manipulation",
 };
 const centerFlex = {
+  margin: "0px 20px",
   display: "flex",
   justifyContent: "center",
 };
 const buttonStyle2 = {
-  margin: "20px 10px",
-  backgroundColor: "#6415FF",
+  margin: "20px 10px 10px 10px",
+  backgroundColor: "#5e5e5e",
   border: "0px",
   borderRadius: "10px",
   color: "#F7FAFC",
@@ -98,10 +99,11 @@ const buttonStyle2 = {
 };
 const datePickerStyle = {
   //display: "block",
-  margin: "20px 10px",
+  
+  margin: "20px 10px 10px 10px",
   borderRadius: "10px",
   padding: "10px",
-  backgroundColor: "#6415FF",
+  backgroundColor: "#5e5e5e",
 };
 const textWhite = { color: "#fff" };
 
@@ -113,11 +115,8 @@ export default ({
   secondaryButtonUrl = "",
   secondaryButtonText = "GitHub",
   buttonRoundedCss = "",
-  landingPages = {},
-  innerPages = {},
-  blocks = {},
   heading = "Insight Ink",
-  description = "The proposed automated feedback system for the Press Information Bureau (PIB) aims to monitor media coverage across regional languages and video formats. It includes web crawlers to scan 200 regional media websites, an NLP-based analysis to categorize news stories by department and tonality, and real-time notifications for negative stories. Additionally, an OCR system will extract relevant clippings from e-papers, while YouTube videos will be analyzed using closed captioning or audio-to-text features. A user-friendly dashboard will allow PIB officers to access and filter information conveniently. This system will enhance the PIB's ability to track and respond to media coverage effectively.",
+  description = "Welcome to the PIB Automated Feedback System, a transformative solution for media monitoring in the Government of India. Our advanced AI and machine learning solution diligently scans and evaluates regional news stories, e-papers, and YouTube videos across various languages. It categorizes content by government departments and sentiment, delivering instant notifications for negative news. Equipped with an intuitive interface and rapid alerts, our platform equips government officials with actionable intelligence, ensuring prompt responses to media feedback.",
 }) => {
   // Set the document title and initialize Google Analytics
   useEffect(() => {
@@ -141,10 +140,7 @@ export default ({
           .padStart(2, "0")}`
       : "";
     // Navigate to the dashboard page
-    navigate(
-      "/dashboard",
-      {state:{dropdownValue, formattedDate}}
-      );
+    navigate("/dashboard", { state: { dropdownValue, formattedDate } });
     // Submit the data here
   };
   const { cursorChangeHandler } = useContext(MouseContext);
@@ -164,7 +160,7 @@ export default ({
           style={{ backdropFilter: "blur(2px)" }}
         >
           <Content2Xl style={{ padding: "0px 0px" }}>
-            <NavRow>
+            <NavRow style={{color:"#000"}}>
               {/* Render the logo and site title */}
               <LogoLink href="/">
                 <img src={logo} alt="" />
@@ -172,21 +168,23 @@ export default ({
               </LogoLink>
               <div tw="flex flex-wrap justify-center lg:justify-end items-center -mr-12"></div>
             </NavRow>
-            <HeroRow>
+            <HeroRow style={{ maxWidth: "1300px" }}>
               {/* Render the hero section with title and description */}
               <TextColumn>
-                <Heading as="h1">{heading}</Heading>
+                <Heading as="h1" style={{ color: "#242424" }}>
+                  {heading}
+                </Heading>
                 <Description>{description}</Description>
+
                 {/* Render the primary and secondary buttons */}
                 <Actions>
-                  
-                    <PrimaryButton
-                      href={primaryButtonUrl}
-                      css={buttonRoundedCss}
-                    >
-                      {primaryButtonText}
-                    </PrimaryButton>
-                 
+                  <PrimaryButton
+                    href={primaryButtonUrl}
+                    style={{ backgroundColor: "#5e5e5e" }}
+                  >
+                    {primaryButtonText}
+                  </PrimaryButton>
+
                   <SecondaryButton href="https://github.com/">
                     {secondaryButtonText}
                   </SecondaryButton>
@@ -195,13 +193,18 @@ export default ({
               <ImageColumn>
                 {/* Render the image */}
                 <ImageContainer>
-                  <Image src="https://imagizer.imageshack.com/img922/3504/XoNdUE.jpg" />
+                  <Image
+                    src="https://64.media.tumblr.com/b83bb2c0ae680d02f3e732b8a789dcbd/tumblr_nydzs5zeHS1r2geqjo1_540.gif"
+                    style={{ borderRadius: "50%" }}
+                  />
                 </ImageContainer>
               </ImageColumn>
             </HeroRow>
             <SectionContainer id="details" style={sectionHighlight}>
               {/* Render the section for entering details */}
-              <SectionHeading>Enter the details</SectionHeading>
+              <SectionHeading style={{ color: "#ededed" }}>
+                Enter the details
+              </SectionHeading>
               <div style={centerFlex}>
                 <SectionDescription>
                   Select the source for gathering information. Use the date
@@ -210,58 +213,66 @@ export default ({
                 </SectionDescription>
               </div>
               <div
-                  onMouseOver={() => cursorChangeHandler("hovered")}
-                    onMouseEnter={() => cursorChangeHandler("hovered")}
-                    onMouseLeave={() => cursorChangeHandler("")}
-                  >
-              <div className="form">
-                {/* Render the form for entering details */}
-                <form onSubmit={handleSubmit}>
-                  <div style={centerFlex}>
-                    <select
-                      value={dropdownValue}
-                      onChange={(e) => setDropdownValue(e.target.value)}
-                      style={buttonStyle2}
-                    >
-                      <option value="">Select News</option>
-                      <option value="ndtv">NDTV (English)</option>
-                      <option value="hindustan">Hindustan (Hindi)</option>
-                      <option value="prajavani">Prajavani (Kannada)</option>
-                      <option value="dinamalar">Dinamalar (Tamil)</option>
-                      <option value="mathrubhumi">
-                        Mathrubhumi (Malayalam)
-                      </option>
-                      <option value="eenadu">Eenadu (Telugu)</option>
-                    </select>
-                    <div style={datePickerStyle}>
-                      <div style={textWhite}>Enter date</div>
-                      {/* Render the date picker */}
-                      <DatePicker
-                        className="datepicker"
-                        selected={dateValue}
-                        onChange={(date) => setDateValue(date)}
-                      />
-                    </div>
-                    <div>
-                      <button
-                        type="submit"
-                        className="button-74"
-                        style={buttonStyle}
+                onMouseOver={() => cursorChangeHandler("hovered")}
+                onMouseEnter={() => cursorChangeHandler("hovered")}
+                onMouseLeave={() => cursorChangeHandler("")}
+              >
+                <div className="form">
+                  {/* Render the form for entering details */}
+                  <form onSubmit={handleSubmit}>
+                    <div style={centerFlex}>
+                      <select
+                        value={dropdownValue}
+                        onChange={(e) => setDropdownValue(e.target.value)}
+                        style={buttonStyle2}
                       >
-                        <img
-                          src="https://imagizer.imageshack.com/img924/2614/Lkco5F.png"
-                          alt=""
-                          width={60}
-                          height={60}
-                        ></img>
-                      </button>
+                        <option value="">Select News</option>
+                        <option value="ndtv">NDTV (English)</option>
+                        <option value="hindustan">Hindustan (Hindi)</option>
+                        <option value="prajavani">Prajavani (Kannada)</option>
+                        <option value="dinamalar">Dinamalar (Tamil)</option>
+                        <option value="mathrubhumi">
+                          Mathrubhumi (Malayalam)
+                        </option>
+                        <option value="eenadu">Eenadu (Telugu)</option>
+                      </select>
+                      <div style={datePickerStyle}>
+                        <div style={textWhite}>Enter date</div>
+                        {/* Render the date picker */}
+                        <DatePicker
+                          className="datepicker"
+                          selected={dateValue}
+                          onChange={(date) => setDateValue(date)}
+                          style={{width:"100%"}}
+                        />
+                      </div>
+                      <div>
+                        <button
+                          type="submit"
+                          className="button-74"
+                          style={buttonStyle}
+                        >
+                          <img
+                            src="https://imagizer.imageshack.com/img924/2614/Lkco5F.png"
+                            alt=""
+                            width={60}
+                            height={60}
+                          ></img>
+                        </button>
+                      </div>
+                      <style jsx="true">{`
+                        @media (max-width: 700px) {
+                          .div {
+                            leftPadding: 100%;
+                          }
+                        }
+                      `}</style>
                     </div>
-                  </div>
-                </form>
-              </div>
+                  </form>
+                </div>
               </div>
               <style jsx="true">{`
-                @media (max-width: 600px) {
+                @media (max-width: 700px) {
                   .form form div {
                     flex-direction: column;
                   }
