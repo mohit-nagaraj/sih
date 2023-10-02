@@ -22,6 +22,7 @@ import "./home.css";
 import DotRing from "components/dotRing";
 import { MouseContext } from "../components/context/mouse-context";
 import YoutubeEmbed from "components/ytembed";
+import Alert from "react-bootstrap/Alert";
 /* Hero */
 const Row = tw.div`flex`;
 const NavRow = tw(Row)`flex flex-col lg:flex-row items-center justify-between`;
@@ -132,24 +133,18 @@ export default ({
   const [dropdownValue, setDropdownValue] = useState("");
   const [dateValue, setDateValue] = useState("");
   const navigate = useNavigate(); // Initialize navigation function
+  const [showAlert, setShowAlert] = useState(false); // State for showing/hiding alert
 
   // Handle the form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     // Check if either the dropdownValue or dateValue is empty
-    if (!dropdownValue && !dateValue) {
-      // Display an error message or take appropriate action
-      alert("Please select a news source and a valid date.");
-      return; // Prevent form submission
-    }
-    if (!dropdownValue) {
-      // Display an error message or take appropriate action
-      alert("Please select a news source");
-      return; // Prevent form submission
-    }
-    if (!dateValue) {
-      // Display an error message or take appropriate action
-      alert("Please select a valid date.");
+    if (!dropdownValue || !dateValue) {
+      // Show the alert and set a timer to hide it after 2 seconds
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 2000);
       return; // Prevent form submission
     }
     // Format the date value to adjust to wht is needed by the API
@@ -332,6 +327,43 @@ export default ({
                         @media (max-width: 700px) {
                           .div {
                             leftpadding: 100%;
+                          }
+                        }
+                      `}</style>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <Alert
+                        className="alert"
+                        variant="danger"
+                        show={showAlert}
+                        onClose={() => setShowAlert(false)}
+                        dismissible
+                      >
+                        <i className="fa fa-exclamation-circle" /> Please select
+                        a news source and a valid date.
+                      </Alert>
+                      <style jsx="true">{`
+                        .alert {
+                          background-color: #f8d7da;
+                          color: #721c24;
+                          border: 1px solid #f5c6cb;
+                          border-radius: 4px;
+                          padding: 15px;
+                          margin: 15px 20px 0px 20px;
+                          font-size: 16px;
+                          font-weight: bold;
+                          max-width: 800px;
+                          position: fixed;
+                          opacity: 0;
+                          transition: opacity 0.5s ease-in-out;
+                        }
+                        .alert.show {
+                          opacity: 1;
+                        }
+
+                        @media (max-width: 700px) {
+                          .alert {
+                            position: relative;
                           }
                         }
                       `}</style>

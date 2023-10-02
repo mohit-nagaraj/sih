@@ -17,13 +17,15 @@ const DotRing = () => {
         style={{ left: `${x}px`, top: `${y}px` }}
       ></div>
       <style jsx="true">{`
-                @media (max-width: 700px) {
-                  .dot .ring{
-                    display: none;
-                    color: red;
-                  }
-                }
-              `}</style>
+        @media (max-width: 700px) {
+          .dot{
+            opacity: 0;
+          }
+          .ring{
+            opacity: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 };
