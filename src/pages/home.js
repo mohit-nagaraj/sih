@@ -18,9 +18,10 @@ import {
   SectionDescription,
 } from "components/misc/Typography";
 import logo from "images/logo.png";
-import "./MainLandingPage.css";
+import "./home.css";
 import DotRing from "components/dotRing";
 import { MouseContext } from "../components/context/mouse-context";
+import YoutubeEmbed from "components/ytembed";
 /* Hero */
 const Row = tw.div`flex`;
 const NavRow = tw(Row)`flex flex-col lg:flex-row items-center justify-between`;
@@ -42,8 +43,9 @@ const ActionButton = tw(
   AnchorLink
 )`px-8 py-3 font-bold rounded bg-primary-500 text-gray-100 hocus:bg-primary-700 hocus:text-gray-200 focus:shadow-outline focus:outline-none transition duration-300 mt-12 inline-block tracking-wide text-center px-10 py-4 font-semibold tracking-normal`;
 const PrimaryButton = tw(ActionButton)``;
+const ActionButton2 = tw.button`px-8 py-3 font-bold rounded bg-primary-500 text-gray-100 hocus:bg-primary-700 hocus:text-gray-200 focus:shadow-outline focus:outline-none transition duration-300 mt-12 inline-block tracking-wide text-center px-10 py-4 font-semibold tracking-normal`;
 const SecondaryButton = tw(
-  ActionButton
+  ActionButton2
 )`mt-6 sm:mt-12 sm:ml-8 bg-gray-300 text-gray-800 hocus:bg-gray-400 hocus:text-gray-900`;
 const ImageColumn = tw(Column)`mx-auto lg:mr-0 relative mt-16 lg:mt-0 lg:ml-8`;
 const ImageContainer = tw.div``;
@@ -53,6 +55,7 @@ const SectionHeading = tw(HeadingBase)`text-primary-900`;
 
 // Define the styles for different UI elements
 const sectionHighlight = {
+  width: "auto",
   backgroundColor: "#242424",
   borderRadius: "30px",
 };
@@ -99,7 +102,7 @@ const buttonStyle2 = {
 };
 const datePickerStyle = {
   //display: "block",
-  
+  width: "auto",
   margin: "20px 10px 10px 10px",
   borderRadius: "10px",
   padding: "10px",
@@ -112,11 +115,11 @@ export default ({
   features = null,
   primaryButtonUrl = "#details",
   primaryButtonText = "Get Started",
-  secondaryButtonUrl = "",
+  secondaryButtonUrl = "#details",
   secondaryButtonText = "GitHub",
   buttonRoundedCss = "",
   heading = "Insight Ink",
-  description = "Welcome to the PIB Automated Feedback System, a transformative solution for media monitoring in the Government of India. Our advanced AI and machine learning solution diligently scans and evaluates regional news stories, e-papers, and YouTube videos across various languages. It categorizes content by government departments and sentiment, delivering instant notifications for negative news. Equipped with an intuitive interface and rapid alerts, our platform equips government officials with actionable intelligence, ensuring prompt responses to media feedback.",
+  description = "Welcome to the Press Information Bureau (PIB) Automated Feedback System, a transformative solution for media monitoring in the Government of India. Our advanced AI and machine learning solution diligently scans and evaluates regional news stories, e-papers, and YouTube videos across various languages. It categorizes content by government departments and sentiment, delivering instant notifications for negative news. Equipped with an intuitive interface and rapid alerts, our platform equips government officials with actionable intelligence, ensuring prompt responses to media feedback.",
 }) => {
   // Set the document title and initialize Google Analytics
   useEffect(() => {
@@ -133,12 +136,29 @@ export default ({
   // Handle the form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Check if either the dropdownValue or dateValue is empty
+    if (!dropdownValue && !dateValue) {
+      // Display an error message or take appropriate action
+      alert("Please select a news source and a valid date.");
+      return; // Prevent form submission
+    }
+    if (!dropdownValue) {
+      // Display an error message or take appropriate action
+      alert("Please select a news source");
+      return; // Prevent form submission
+    }
+    if (!dateValue) {
+      // Display an error message or take appropriate action
+      alert("Please select a valid date.");
+      return; // Prevent form submission
+    }
     // Format the date value to adjust to wht is needed by the API
     const formattedDate = dateValue
       ? `${dateValue.getFullYear()}-${(dateValue.getMonth() + 1)
           .toString()
           .padStart(2, "0")}`
       : "";
+    console.log(dropdownValue, formattedDate);
     // Navigate to the dashboard page
     navigate("/dashboard", { state: { dropdownValue, formattedDate } });
     // Submit the data here
@@ -160,9 +180,9 @@ export default ({
           style={{ backdropFilter: "blur(2px)" }}
         >
           <Content2Xl style={{ padding: "0px 0px" }}>
-            <NavRow style={{color:"#000"}}>
+            <NavRow style={{ color: "#000" }}>
               {/* Render the logo and site title */}
-              <LogoLink href="/">
+              <LogoLink href="/" style={{ color: "black" }}>
                 <img src={logo} alt="" />
                 Team Innov8
               </LogoLink>
@@ -180,12 +200,21 @@ export default ({
                 <Actions>
                   <PrimaryButton
                     href={primaryButtonUrl}
-                    style={{ backgroundColor: "#5e5e5e" }}
+                    style={{ backgroundColor: "#242424" }}
                   >
                     {primaryButtonText}
                   </PrimaryButton>
 
-                  <SecondaryButton href="https://github.com/">
+                  <SecondaryButton
+                    role="link"
+                    onClick={() => {
+                      window.open(
+                        "https://github.com/areebahmeddd/Insight-Ink",
+                        "_blank",
+                        "noreferrer"
+                      );
+                    }}
+                  >
                     {secondaryButtonText}
                   </SecondaryButton>
                 </Actions>
@@ -203,15 +232,27 @@ export default ({
             <SectionContainer id="details" style={sectionHighlight}>
               {/* Render the section for entering details */}
               <SectionHeading style={{ color: "#ededed" }}>
-                Enter the details
+                Build Your Search
               </SectionHeading>
               <div style={centerFlex}>
-                <SectionDescription>
-                  Select the source for gathering information. Use the date
-                  picker to search for the particular date. Must enter all the
-                  fields. It takes time while we get the information for you
+                <SectionDescription style={{ textAlign: "center" }}>
+                  Select your preferred news source and fine-tune your search by
+                  specifying the exact date
                 </SectionDescription>
               </div>
+              <div className="player">
+                <YoutubeEmbed embedId="dQw4w9WgXcQ" />
+              </div>
+              <style jsx="true">{`
+                .player {
+                  margin: 2% 20%;
+                }
+                @media (max-width: 700px) {
+                  .player {
+                    margin: 1% 5%;
+                  }
+                }
+              `}</style>
               <div
                 onMouseOver={() => cursorChangeHandler("hovered")}
                 onMouseEnter={() => cursorChangeHandler("hovered")}
@@ -226,7 +267,7 @@ export default ({
                         onChange={(e) => setDropdownValue(e.target.value)}
                         style={buttonStyle2}
                       >
-                        <option value="">Select News</option>
+                        <option value="">News Source</option>
                         <option value="ndtv">NDTV (English)</option>
                         <option value="hindustan">Hindustan (Hindi)</option>
                         <option value="prajavani">Prajavani (Kannada)</option>
@@ -237,33 +278,60 @@ export default ({
                         <option value="eenadu">Eenadu (Telugu)</option>
                       </select>
                       <div style={datePickerStyle}>
-                        <div style={textWhite}>Enter date</div>
+                        <div style={centerFlex}>
+                          <div style={textWhite}>Date</div>
+                        </div>
                         {/* Render the date picker */}
                         <DatePicker
                           className="datepicker"
                           selected={dateValue}
                           onChange={(date) => setDateValue(date)}
-                          style={{width:"100%"}}
+                          style={{ width: "100%" }}
                         />
+                        <style jsx="true">{`
+                          .datepicker {
+                            background-color: #454444;
+                            color: white;
+                            border-radius: 8px;
+                            padding: 2px 0px 2px 8px;
+                            width: 250px;
+                            box-sizing: border-box;
+                          }
+                        `}</style>
                       </div>
                       <div>
                         <button
                           type="submit"
                           className="button-74"
-                          style={buttonStyle}
+                          style={{
+                            ...buttonStyle,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
                         >
                           <img
-                            src="https://imagizer.imageshack.com/img924/2614/Lkco5F.png"
+                            src="https://imagizer.imageshack.com/img924/9773/V952F6.png"
+                            display="inline-block"
                             alt=""
-                            width={60}
-                            height={60}
+                            width={35}
+                            height={35}
+                            style={{ margin: 10 }}
                           ></img>
+                          <div
+                            style={{
+                              fontSize: "30px",
+                              marginRight: "10px",
+                              fontWeight: "lighter",
+                            }}
+                          >
+                            Search
+                          </div>
                         </button>
                       </div>
                       <style jsx="true">{`
                         @media (max-width: 700px) {
                           .div {
-                            leftPadding: 100%;
+                            leftpadding: 100%;
                           }
                         }
                       `}</style>

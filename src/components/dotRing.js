@@ -7,7 +7,7 @@ const DotRing = () => {
   const { cursorType } = useContext(MouseContext);
   const { x, y } = useMousePosition();
   return (
-    <>
+    <div>
       <div
         style={{ left: `${x}px`, top: `${y}px` }}
         className={"ring" + cursorType}
@@ -16,7 +16,15 @@ const DotRing = () => {
         className={"dot" + cursorType}
         style={{ left: `${x}px`, top: `${y}px` }}
       ></div>
-    </>
+      <style jsx="true">{`
+                @media (max-width: 700px) {
+                  .dot .ring{
+                    display: none;
+                    color: red;
+                  }
+                }
+              `}</style>
+    </div>
   );
 };
 

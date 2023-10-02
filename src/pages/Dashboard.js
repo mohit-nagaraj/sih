@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ClickOutside from "react-click-outside";
 import "font-awesome/css/font-awesome.min.css";
 import styled from "styled-components";
-import "./Dashboard.css";
+import "./dashboard.css";
 import TableTable from "../components/table";
 import SideNav, { NavItem, NavIcon, NavText } from "@trendmicro/react-sidenav";
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
@@ -31,6 +31,7 @@ const Dashboard = () => {
     }, 1500);
 
     //later replace this with the domain name
+    
     axios
       .get('http://localhost:5000/', 
       { dropdownValue, formattedDate }
