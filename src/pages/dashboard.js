@@ -3,46 +3,31 @@ import ClickOutside from "react-click-outside";
 import "font-awesome/css/font-awesome.min.css";
 import styled from "styled-components";
 import "./dashboard.css";
-import TableTable from "../components/table";
+import SyncTable from "../components/table";
 import SideNav, { NavItem, NavIcon, NavText } from "@trendmicro/react-sidenav";
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
-import Loader from "components/loader/Loader";
+import ContactForm from "components/contact/contact";
+import Charts from "components/charts/Charts";
+import chartpic from "../sentiment_distribution.png";
+
 const StyledSideNav = styled(SideNav)`
   background-color: #242424;
+  z-index: 1000;
+  position: fixed;
 `;
 StyledSideNav.defaultProps = SideNav.defaultProps;
 
-// Dashboard component
 const Dashboard = () => {
   const [expanded, setExpanded] = useState(false);
-  const [currentPage, setCurrentPage] = useState("home");
+  const [currentPage, setCurrentPage] = useState("tables");
   const location = useLocation();
   const [tableData, setTableData] = useState(null);
-  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    const { dropdownValue, formattedDate } = location.state;
-    setLoading(true);
+    const { tableData } = location.state;
 
-    setTimeout(() => {
-      setLoading(true);
-    }, 1500);
-
-    //later replace this with the domain name
-
-    axios
-      .get("http://localhost:5000/", { dropdownValue, formattedDate })
-      .then((res) => {
-        setTableData(res.data);
-        console.log(tableData);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+    setTableData(tableData);
   }, [location.state]);
 
   const handlePageChange = (pageName) => {
@@ -52,26 +37,27 @@ const Dashboard = () => {
   const renderPageContent = () => {
     switch (currentPage) {
       case "home":
-        return <TableTable />;
+        return <div style={{ color: "#000" }}>Home</div>;
+      case "info":
+        return <div style={{ color: "#000" }}>Info</div>;
+      case "tables":
+        return <SyncTable data={tableData} />;
       case "charts":
-        return <div>charts</div>;
+        return <div style={{ color: "#000" }}><Charts chartspic={chartpic}/></div>;
       case "contact":
-        return <div>contact</div>;
+        return <ContactForm />;
       case "settings":
-        return <div>settings</div>;
+        return <div style={{ color: "#000" }}>Settings</div>;
       default:
         return null;
     }
   };
 
-  return isLoading ? (
-    <Loader />
-  ) : (
+  return (
     <div className="dashboard-container">
-
       <ClickOutside
         onClickOutside={() => {
-          setExpanded(false); 
+          setExpanded(false);
         }}
       >
         <StyledSideNav
@@ -81,11 +67,11 @@ const Dashboard = () => {
           }}
         >
           <SideNav.Toggle />
-          <SideNav.Nav defaultSelected="home">
-            <NavItem 
+          <SideNav.Nav defaultSelected="tables">
+            <NavItem
               eventKey="home"
               onClick={() => {
-                handlePageChange("home");
+                window.open("../", "_self");
               }}
             >
               <NavIcon>
@@ -96,7 +82,32 @@ const Dashboard = () => {
               </NavIcon>
               <NavText>Home</NavText>
             </NavItem>
-            <NavItem 
+            <NavItem
+              eventKey="info"
+              onClick={() => {
+                handlePageChange("info");
+              }}
+            >
+              <NavIcon>
+                <i
+                  className="fa fa-info-circle"
+                  style={{ fontSize: "1.75em" }}
+                />
+              </NavIcon>
+              <NavText>Info</NavText>
+            </NavItem>
+            <NavItem
+              eventKey="tables"
+              onClick={() => {
+                handlePageChange("tables");
+              }}
+            >
+              <NavIcon>
+                <i className="fa fa-table" style={{ fontSize: "1.75em" }} />
+              </NavIcon>
+              <NavText>Tables</NavText>
+            </NavItem>
+            <NavItem
               eventKey="charts"
               onClick={() => {
                 handlePageChange("charts");
@@ -110,7 +121,7 @@ const Dashboard = () => {
               </NavIcon>
               <NavText>Charts</NavText>
             </NavItem>
-            <NavItem 
+            <NavItem
               eventKey="contact"
               onClick={() => {
                 handlePageChange("contact");
@@ -122,9 +133,9 @@ const Dashboard = () => {
                   style={{ fontSize: "1.75em" }}
                 />
               </NavIcon>
-              <NavText>Contact us</NavText>
+              <NavText>Contact</NavText>
             </NavItem>
-            <NavItem 
+            <NavItem
               eventKey="settings"
               onClick={() => {
                 handlePageChange("settings");
@@ -139,10 +150,21 @@ const Dashboard = () => {
         </StyledSideNav>
       </ClickOutside>
 
-      {/* Render the main content section */}
       <section className={`section ${expanded ? "pushed" : ""}`}>
         <section className="section-content">
-          <h1>Article Dashboard</h1>
+          <div className="titleCenter">Dashboard</div>
+          <style jsx="true">
+            {`
+              .titleCenter {
+                color: #000;
+                text-align: center;
+                font-size: 26px;
+                font-weight: semibold;
+                margin-bottom: 10px;
+                border-bottom: 2px solid #242424;
+              }
+            `}
+          </style>
           {renderPageContent()}
         </section>
       </section>

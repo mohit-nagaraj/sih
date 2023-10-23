@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
@@ -23,7 +24,9 @@ import DotRing from "components/dotRing";
 import { MouseContext } from "../components/context/mouse-context";
 import YoutubeEmbed from "components/ytembed";
 import Alert from "react-bootstrap/Alert";
-/* Hero */
+import Loader from "components/loader/Loader";
+import testData from "../test.json";
+
 const Row = tw.div`flex`;
 const NavRow = tw(Row)`flex flex-col lg:flex-row items-center justify-between`;
 const HeroRow = tw(
@@ -44,7 +47,6 @@ const ActionButton = tw(
   AnchorLink
 )`px-8 py-3 font-bold rounded bg-primary-500 text-gray-100 hocus:bg-primary-700 hocus:text-gray-200 focus:shadow-outline focus:outline-none transition duration-300 mt-12 inline-block tracking-wide text-center px-10 py-4 font-semibold tracking-normal`;
 const PrimaryButton = tw(ActionButton)``;
-
 const ActionButton2 = tw.button`px-8 py-3 font-bold rounded bg-primary-500 text-gray-100 hocus:bg-primary-700 hocus:text-gray-200 focus:shadow-outline focus:outline-none transition duration-300 mt-12 inline-block tracking-wide text-center px-10 py-4 font-semibold tracking-normal`;
 const PrimaryButton2 = tw(ActionButton2)``;
 const SecondaryButton = tw(
@@ -55,8 +57,6 @@ const ImageContainer = tw.div``;
 const Image = tw.img`max-w-full rounded-t sm:rounded`;
 const SectionContainer = tw(ContentWithVerticalPadding)``;
 const SectionHeading = tw(HeadingBase)`text-primary-900`;
-
-// Define the styles for different UI elements
 const sectionHighlight = {
   width: "auto",
   backgroundColor: "#242424",
@@ -113,7 +113,6 @@ const datePickerStyle = {
 };
 const textWhite = { color: "#fff" };
 
-// Main component
 export default ({
   features = null,
   primaryButtonUrl = "#details",
@@ -124,45 +123,88 @@ export default ({
   heading = "Insight Ink",
   description = "Welcome to Press Information Bureau (PIB) automated feedback system, a transformative solution for media monitoring in the Government of India. Our advanced AI and machine learning platform analyzes national and regional news articles, e-papers, and YouTube videos in various languages, categorizing them by government departments and sentiment. It delivers real-time notifications for negative news and provides a user-friendly interface for government officials to take swift action in response to media feedback, strengthening government-public communication.",
 }) => {
-  // Set the document title and initialize Google Analytics
   useEffect(() => {
     document.title = "Insight Ink";
     window.gtag("js", new Date());
     window.gtag("config", "UA-45799926-9");
   }, []);
 
-  // Define the state variables
   const [dropdownValue, setDropdownValue] = useState("");
   const [dateValue, setDateValue] = useState("");
-  const navigate = useNavigate(); // Initialize navigation function
-  const [showAlert, setShowAlert] = useState(false); // State for showing/hiding alert
+  const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  // Handle the form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Check if either the dropdownValue or dateValue is empty
+
     if (!dropdownValue || !dateValue) {
-      // Show the alert and set a timer to hide it after 2 seconds
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
       }, 2000);
-      return; // Prevent form submission
+
+      return;
     }
-    // Format the date value to adjust to wht is needed by the API
+
     const formattedDate = dateValue
       ? `${dateValue.getFullYear()}-${(dateValue.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}`
+        .toString()
+        .padStart(2, "0")}`
       : "";
-    console.log(dropdownValue, formattedDate);
-    // Navigate to the dashboard page
-    navigate("/dashboard", { state: { dropdownValue, formattedDate } });
-    // Submit the data here
+
+    setLoading(true);
+
+    try {
+      if (
+        [
+          "NDTV",
+          "Dainik Jagran",
+          "Prajavani",
+          "Dinamalar",
+          "Mathrubhumi",
+          "Eenadu",
+        ].includes(dropdownValue)
+      ) {
+        const requestData = {
+          news_source: dropdownValue,
+          target_date: formattedDate,
+        };
+
+        const response = await Axios.post(
+          "http://127.0.0.1:5000/api",
+          requestData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.data && !response.data.error) {
+          navigate("/dashboard", {
+            state: { tableData: response.data },
+          });
+        } else {
+          console.error("Error: ", response.data.error);
+        }
+      }
+    } catch (error) {
+      navigate("/dashboard", {
+        state: { tableData: testData },
+      });
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
+
   const { cursorChangeHandler } = useContext(MouseContext);
-  // Render the main page
-  return (
+
+  return isLoading ? (
+    <Loader />
+  ) : (
     <div
       style={{
         backgroundImage:
@@ -177,8 +219,7 @@ export default ({
           style={{ backdropFilter: "blur(2px)" }}
         >
           <Content2Xl style={{ padding: "0px 0px" }}>
-            <NavRow style={{ color: "#000",alignItems:"flex-start" }}>
-              {/* Render the logo and site title */}
+            <NavRow style={{ color: "#000", alignItems: "flex-start" }}>
               <LogoLink href="/" style={{ color: "black" }}>
                 <img src={logo} alt="" />
                 Team Innov8
@@ -186,14 +227,12 @@ export default ({
               <div tw="flex flex-wrap justify-center lg:justify-end items-center -mr-12"></div>
             </NavRow>
             <HeroRow style={{ maxWidth: "1300px" }}>
-              {/* Render the hero section with title and description */}
               <TextColumn>
                 <Heading as="h1" style={{ color: "#242424" }}>
                   {heading}
                 </Heading>
                 <Description>{description}</Description>
 
-                {/* Render the primary and secondary buttons */}
                 <Actions>
                   <PrimaryButton
                     href={primaryButtonUrl}
@@ -202,24 +241,37 @@ export default ({
                     {primaryButtonText}
                   </PrimaryButton>
                   <PrimaryButton2
-                  className="downloadbtn"
+                    className="downloadbtn"
                     onClick={() => {
                       window.open(
-                        "https://play.google.com/store/apps",
+                        "https://play.google.com/",
                         "_blank",
                         "noreferrer"
                       );
                     }}
                   >
+                    <img
+                      src="https://imagizer.imageshack.com/img922/2236/gKEHyO.png"
+                      alt=""
+                      width={25}
+                      height={25}
+                      style={{ marginRight: "10px" }}
+                    ></img>
                     Download
                   </PrimaryButton2>
                   <style jsx="true">{`
                     .downloadbtn {
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
                       background-color: #242424;
                       margin-left: 32px;
                       margin-top: 48px;
                     }
                     .downloadbtn:hover {
+                      background-color: #3f3f3f;
+                    }
+                    .downloadbtn:focus {
                       background-color: #3f3f3f;
                     }
                     @media (max-width: 640px) {
@@ -244,29 +296,28 @@ export default ({
                       );
                     }}
                   >
-                    {secondaryButtonText}
+                    {" "}
                     <img
                       src="https://imagizer.imageshack.com/img922/6533/UFGckL.png"
                       alt=""
                       width={25}
                       height={25}
-                      style={{ marginLeft: "10px" }}
+                      style={{ marginRight: "10px" }}
                     ></img>
+                    {secondaryButtonText}
                   </SecondaryButton>
                 </Actions>
               </TextColumn>
               <ImageColumn>
-                {/* Render the image */}
                 <ImageContainer>
                   <Image
                     src="https://64.media.tumblr.com/b83bb2c0ae680d02f3e732b8a789dcbd/tumblr_nydzs5zeHS1r2geqjo1_540.gif"
-                    style={{ borderRadius: "50%" }}
+                    style={{ borderRadius: "50%",pointerEvents:"none",userSelect:"none"}}
                   />
                 </ImageContainer>
               </ImageColumn>
             </HeroRow>
             <SectionContainer id="details" style={sectionHighlight}>
-              {/* Render the section for entering details */}
               <SectionHeading style={{ color: "#ededed" }}>
                 Build Your Search
               </SectionHeading>
@@ -277,13 +328,8 @@ export default ({
                 </SectionDescription>
               </div>
 
-              <div
-                onMouseOver={() => cursorChangeHandler("hovered")}
-                onMouseEnter={() => cursorChangeHandler("hovered")}
-                onMouseLeave={() => cursorChangeHandler("")}
-              >
+              
                 <div className="form">
-                  {/* Render the form for entering details */}
                   <form onSubmit={handleSubmit}>
                     <div style={{ ...centerFlex, margin: "0px 20px" }}>
                       <select
@@ -295,16 +341,19 @@ export default ({
                         }}
                       >
                         <option hidden value="">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;News Source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;News
+                          Source&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </option>
-                        <option value="ndtv">NDTV (English)</option>
-                        <option value="dainikjagran">Dainik Jagran (Hindi)</option>
-                        <option value="prajavani">Prajavani (Kannada)</option>
-                        <option value="dinamalar">Dinamalar (Tamil)</option>
-                        <option value="mathrubhumi">
+                        <option value="NDTV">NDTV (English)</option>
+                        <option value="Dainik Jagran">
+                          Dainik Jagran (Hindi)
+                        </option>
+                        <option value="Prajavani">Prajavani (Kannada)</option>
+                        <option value="Dinamalar">Dinamalar (Tamil)</option>
+                        <option value="Mathrubhumi">
                           Mathrubhumi (Malayalam)
                         </option>
-                        <option value="eenadu">Eenadu (Telugu)</option>
+                        <option value="Eenadu">Eenadu (Telugu)</option>
                       </select>
                       <style jsx="true">{`
                         select {
@@ -319,16 +368,17 @@ export default ({
                         }
                       `}</style>
                       <div style={datePickerStyle}>
-                        <div style={centerFlex}>
+                        <div style={{...centerFlex,textAlign:"center"}}>
                           <div style={textWhite}>Select Date</div>
                         </div>
-                        {/* Render the date picker */}
+                        <div style={{alignItems:"center",display:"flex"}}>
                         <DatePicker
                           className="datepicker"
                           selected={dateValue}
                           onChange={(date) => setDateValue(date)}
                           style={{ width: "100%" }}
                         />
+                        </div>
                         <style jsx="true">{`
                           .datepicker {
                             background-color: #454444;
@@ -347,7 +397,7 @@ export default ({
 
                           @media (max-width: 400px) {
                             .datepicker {
-                              width: 60vw;
+                              width: 100%;
                             }
                           }
                         `}</style>
@@ -408,7 +458,7 @@ export default ({
                           border: 1px solid #f5c6cb;
                           border-radius: 4px;
                           padding: 15px;
-                          margin: 15px 20px 0px 20px;
+                          margin: 5px 20px 0px 20px;
                           font-size: 16px;
                           font-weight: bold;
                           max-width: 800px;
@@ -427,12 +477,34 @@ export default ({
                         }
                       `}</style>
                     </div>
+                    <SectionHeading
+                      style={{ color: "#ededed", marginTop: "4%" }}
+                    >
+                      Project Demo
+                    </SectionHeading>
+                    <div
+                  style={{
+                    ...centerFlex,
+                    textAlign: "center",
+                    margin: "0px 20px 10px 20px",
+                  }}
+                >
+                  <SectionDescription>
+                    <a href="https://github.com/areebahmeddd/Insight-Ink/blob/main/README.md">
+                      Insight Ink documentation is available here
+                    </a>
+                    <br />
+                    <a href="https://github.com/areebahmeddd/Insight-Ink/blob/main/LICENSE">
+                      Insight Ink license is available here
+                    </a>
+                  </SectionDescription>
+                </div>
                     <div className="player">
                       <YoutubeEmbed embedId="dQw4w9WgXcQ" />
                     </div>
                     <style jsx="true">{`
                       .player {
-                        margin: 5% 20% 0% 20%;
+                        margin: 0% 20% 0% 20%;
                       }
                       @media (max-width: 700px) {
                         .player {
@@ -441,43 +513,7 @@ export default ({
                       }
                     `}</style>
                   </form>
-                  <div style={{padding:"32px 0px 0px 0px"}}>
-                  <div style={{...centerFlex,color:"grey", cursor:"default"}}>Insight Ink documentation is available&nbsp;<div className="documentation" onClick={() => {
-                      window.open(
-                        "https://github.com/areebahmeddd/Insight-Ink/blob/main/README.md",
-                        "_self",
-                        "noreferrer"
-                      );
-                    }}>»here«</div>
-                    <style jsx="true">{`
-                      .documentation {
-                        color:grey;cursor:pointer;
-                        transition:color 0.3s ease-in-out;
-                      }
-                      .documentation:hover {
-                        color:#fff;
-                      }
-                    `}</style>
-                    </div>
-                  <div className="license glow" style={{...centerFlex,cursor:"pointer"}} onClick={() => {
-                      window.open(
-                        "https://github.com/areebahmeddd/Insight-Ink/blob/main/LICENSE",
-                        "_self",
-                        "noreferrer"
-                      );
-                    }}>©️ Insight Ink 2023</div>
-                    <style jsx="true">{`
-                      .license {
-                        color:grey;cursor:pointer;
-                        transition:color 0.3s ease-in-out;
-                      }
-                      .license:hover {
-                        color:#fafafa;
-                      }
-                    `}</style>
-                  </div>
                 </div>
-              </div>
               <style jsx="true">{`
                 @media (max-width: 700px) {
                   .form form div {
@@ -489,7 +525,6 @@ export default ({
           </Content2Xl>
         </Container>
       </AnimationRevealPage>
-      {/* Render the dot ring cursor*/}
       <DotRing />
     </div>
   );
